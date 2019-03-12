@@ -16,6 +16,8 @@ public class Captor {
 
     private PowerSource powerSource;
 
+    private Site site;
+
     @Deprecated
     public Captor() {
         // Use for serializer or deserializer
@@ -25,9 +27,18 @@ public class Captor {
      * Constructor to use with required property
      * @param name
      */
-    public Captor(String name, PowerSource powerSource) {
+    public Captor(String name, PowerSource powerSource, Site site) {
         this.name = name;
         this.powerSource = powerSource;
+        this.site = site;
+    }
+
+    public Site getSite() {
+        return site;
+    }
+
+    public void setSite(Site site) {
+        this.site = site;
     }
 
     public PowerSource getPowerSource() {

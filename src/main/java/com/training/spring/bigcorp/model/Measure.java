@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 public class Measure {
+    private Long id;
     private Instant instant;
     private Integer valueInWatt;
     private Captor captor;
@@ -36,6 +37,14 @@ public class Measure {
 
     public void setCaptor(Captor captor) {
         this.captor = captor;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

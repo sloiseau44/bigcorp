@@ -2,12 +2,13 @@ package com.training.spring.bigcorp.service;
 
 import com.training.spring.bigcorp.config.Monitored;
 import com.training.spring.bigcorp.model.Captor;
-import com.training.spring.bigcorp.model.PowerSource;
+import com.training.spring.bigcorp.repository.CaptorDao;
 import com.training.spring.bigcorp.service.measure.MeasureService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CaptorServiceImpl implements CaptorService{
@@ -15,6 +16,9 @@ public class CaptorServiceImpl implements CaptorService{
     private MeasureService fixedMeasureService;
     private MeasureService realMeasureService;
     private MeasureService simulatedMeasureService;
+
+    @Autowired
+    private CaptorDao captorDao;
 
     public CaptorServiceImpl(){};
 
@@ -27,13 +31,16 @@ public class CaptorServiceImpl implements CaptorService{
     @Override
     @Monitored
     public Set<Captor> findBySite(String siteId) {
-        Set<Captor> captors = new HashSet<>();
+        Set<Captor> listCaptor = captorDao.findBySiteId(siteId).stream().collect(Collectors.toSet());
+
+
+       /* Set<Captor> captors = new HashSet<>();
         if (siteId == null) {
             return captors;
         }
-        captors.add(new Captor("Capteur fixed", PowerSource.FIXED));
+        captors.add(new Captor("Capteur fixed", PowerSource.FIXED, new Site("bigcorp")));
        /* captors.add(new Captor("Capteur real", PowerSource.REAL));
         captors.add(new Captor("Capteur simulated", PowerSource.SIMULATED));*/
-        return captors;
+        return listCaptor;
     }
 }
