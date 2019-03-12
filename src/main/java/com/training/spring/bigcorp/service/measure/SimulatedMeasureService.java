@@ -1,8 +1,10 @@
 package com.training.spring.bigcorp.service.measure;
 
+import com.training.spring.bigcorp.config.properties.BigCorpApplicationMeasureProperties;
 import com.training.spring.bigcorp.model.Captor;
 import com.training.spring.bigcorp.model.Measure;
 import com.training.spring.bigcorp.model.MeasureStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -14,8 +16,8 @@ import java.util.List;
 @Service
 @PropertySource("classpath:application.properties")
 public class SimulatedMeasureService implements MeasureService  {
-    @Value("${bigcorp.measure.default-simulated}")
-    private Integer valueInWatt;
+    @Autowired
+    private BigCorpApplicationMeasureProperties properties;
 
     @Override
     public List<Measure> readMeasures(Captor captor, Instant start, Instant end, MeasureStep step) {
@@ -24,7 +26,7 @@ public class SimulatedMeasureService implements MeasureService  {
         List<Measure> measures = new ArrayList<>();
         Instant current = start;
         while(current.isBefore(end)){
-            measures.add(new Measure(current, valueInWatt, captor));
+            measures.add(new Measure(current, properties.getDefaultSimulated(), captor));
             current = current.plusSeconds(step.getDurationInSecondes());
         }
         return measures;

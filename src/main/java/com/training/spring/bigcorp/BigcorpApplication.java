@@ -1,6 +1,6 @@
 package com.training.spring.bigcorp;
 
-import com.training.spring.bigcorp.model.ApplicationInfo;
+import com.training.spring.bigcorp.config.properties.BigCorpApplicationProperties;
 import com.training.spring.bigcorp.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +14,10 @@ public class BigcorpApplication {
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(BigcorpApplication.class, args);
-		ApplicationInfo applicationInfo = context.getBean(ApplicationInfo.class);
+		BigCorpApplicationProperties bigCorpApplicationProperties = context.getBean(BigCorpApplicationProperties.class);
 		logger.debug("========================================================================");
-		logger.debug("Application [" + applicationInfo.getName() + "] - version: " + applicationInfo.getVersion());
-		logger.debug("plus d'informations sur " +applicationInfo.getWebSiteUrl());
+		logger.debug("Application [" + bigCorpApplicationProperties.getName() + "] - version: " + bigCorpApplicationProperties.getVersion());
+		logger.debug("plus d'informations sur " + bigCorpApplicationProperties.getWebSiteUrl());
 		logger.debug("========================================================================");
 		context.getBean(SiteService.class).findById("test");
 	}
