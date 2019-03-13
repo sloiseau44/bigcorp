@@ -3,6 +3,7 @@ package com.training.spring.bigcorp.repository;
 import com.training.spring.bigcorp.model.Captor;
 import com.training.spring.bigcorp.model.PowerSource;
 import com.training.spring.bigcorp.model.Site;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,8 @@ public class CaptorDaoImpl implements CaptorDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private static String SELECT_WITH_JOIN ="SELECT c.id, c.name, c.site_id, s.name as site_name FROM Captor c inner join Site s on c.site_id = s.id ";
+
     private Captor captorMapper(ResultSet rs, int rowNum) throws SQLException {
         Site site = new Site(rs.getString("site_name"));
         site.setId(rs.getString("site_id"));
@@ -31,7 +34,11 @@ public class CaptorDaoImpl implements CaptorDao {
 
     @Override
     public List<Captor> findBySiteId(String siteId) {
-        return jdbcTemplate.query("SELECT c.id, c.name, c.site_id, s.name as site_name FROM Captor c inner join Site s on c.site_id = s.id WHERE s.site_id="+siteId, this::captorMapper);
+        try{
+            return  jdbcTemplate.query(SELECT_WITH_JOIN+"WHERE c.site_id=:id", new MapSqlParameterSource().addValue("id", siteId), this::captorMapper);
+        }catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     @Override
@@ -44,12 +51,20 @@ public class CaptorDaoImpl implements CaptorDao {
 
     @Override
     public Captor findById(String s) {
-        return jdbcTemplate.queryForObject("SELECT c.id, c.name, c.site_id, s.name as site_name FROM Captor c inner join Site s on c.site_id = s.id WHERE c.id="+s, new MapSqlParameterSource("id", s), this::captorMapper);
+        try{
+            return jdbcTemplate.queryForObject(SELECT_WITH_JOIN+" WHERE c.id=:id", new MapSqlParameterSource("id", s), this::captorMapper);
+        }catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     @Override
     public List<Captor> findAll() {
-        return jdbcTemplate.query("SELECT c.id, c.name, c.site_id, s.name as site_name FROM Captor c inner join Site s on c.site_id = s.id ", this::captorMapper);
+        try{
+            return jdbcTemplate.query(SELECT_WITH_JOIN, this::captorMapper);
+        }catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     @Override
@@ -60,9 +75,9 @@ public class CaptorDaoImpl implements CaptorDao {
                 .addValue("site_id", element.getSite().getId()));
     }
 
+
     @Override
     public void deleteById(String s) {
-        jdbcTemplate.update("DELETE FROM CAPTOR WHERE id=:id", new MapSqlParameterSource()
-                .addValue("id", s));
+        jdbcTemplate.update("DELETE FROM CAPTOR WHERE id=:id", new MapSqlParameterSource().addValue("id", s));
     }
 }
