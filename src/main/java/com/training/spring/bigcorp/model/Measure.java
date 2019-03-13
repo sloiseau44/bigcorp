@@ -1,13 +1,22 @@
 package com.training.spring.bigcorp.model;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
+@Entity
 public class Measure {
-    private Long id;
+    @Id
+    @GeneratedValue
+    private String id;
+    @Column(nullable=false)
     private Instant instant;
+    @Column(nullable=false)
     private Integer valueInWatt;
+    @ManyToOne(optional=false)
     private Captor captor;
+
+    public Measure(){}
 
     public Measure(Instant instant, Integer valueInWatt, Captor captor) {
         this.instant = instant;
@@ -39,11 +48,11 @@ public class Measure {
         this.captor = captor;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
