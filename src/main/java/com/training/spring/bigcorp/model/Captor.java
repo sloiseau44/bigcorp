@@ -36,9 +36,8 @@ public class Captor {
      * Constructor to use with required property
      * @param name
      */
-    public Captor(String name, PowerSource powerSource, Site site) {
+    public Captor(String name,  Site site) {
         this.name = name;
-        this.powerSource = powerSource;
         this.site = site;
     }
 
@@ -72,6 +71,14 @@ public class Captor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getDefaultPowerInWatt() {
+        return defaultPowerInWatt;
+    }
+
+    public void setDefaultPowerInWatt(Integer defaultPowerInWatt) {
+        this.defaultPowerInWatt = defaultPowerInWatt;
     }
 
     @Override

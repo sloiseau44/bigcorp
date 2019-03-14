@@ -19,7 +19,7 @@ public class SimulatedMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new Captor("test", PowerSource.SIMULATED, new Site("bigcorp"));
+    private Captor captor = new Captor("test", new Site("bigcorp"));
     /**
      * Start instant used in tests
      */

@@ -20,7 +20,7 @@ public class FixedMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new Captor("test", PowerSource.FIXED, new Site("bigcorp"));
+    private Captor captor = new Captor("test", new Site("bigcorp"));
     /**
      * Start instant used in tests
      */

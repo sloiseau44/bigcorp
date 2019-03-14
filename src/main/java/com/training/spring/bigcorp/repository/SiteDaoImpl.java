@@ -1,6 +1,7 @@
 package com.training.spring.bigcorp.repository;
 
 import com.training.spring.bigcorp.model.Site;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,9 @@ import java.util.List;
 public class SiteDaoImpl implements SiteDao {
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private CaptorDao captorDao;
 
     private static String SELECT_WITH_JOIN ="select s from Site s";
 
@@ -35,6 +39,7 @@ public class SiteDaoImpl implements SiteDao {
 
     @Override
     public void delete(Site element) {
+        captorDao.findBySiteId(element.getId()).forEach(c -> captorDao.delete(c));
         em.remove(element);
     }
 

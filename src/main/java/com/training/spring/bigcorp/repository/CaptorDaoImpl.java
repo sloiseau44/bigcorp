@@ -1,17 +1,23 @@
 package com.training.spring.bigcorp.repository;
 
 import com.training.spring.bigcorp.model.Captor;
+import com.training.spring.bigcorp.model.Measure;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @Repository
 public class CaptorDaoImpl implements CaptorDao {
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private MeasureDao measureDao;
 
     private static String SELECT_WITH_JOIN ="select c from Captor c inner join c.site s ";
 
@@ -44,7 +50,10 @@ public class CaptorDaoImpl implements CaptorDao {
 
     @Override
     public void delete(Captor element) {
+        measureDao.findByCaptorId(element.getId()).forEach(m -> measureDao.delete(m));
         em.remove(element);
+
+
     }
 
     @Override

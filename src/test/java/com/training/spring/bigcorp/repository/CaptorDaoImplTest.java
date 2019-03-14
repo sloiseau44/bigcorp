@@ -5,15 +5,14 @@ import com.training.spring.bigcorp.model.PowerSource;
 import com.training.spring.bigcorp.model.Site;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -22,12 +21,22 @@ import java.util.List;
 public class CaptorDaoImplTest {
     @Autowired
     private CaptorDao captorDao;
-    private Site site;
-    @Before
-    public void init(){
-        site = new Site("name");
-        site.setId("site1");
-    }
+
+   /* @Autowired
+    private EntityManager entityManager;
+
+    @Test
+    public void deleteByIdShouldThrowExceptionWhenIdIsUsedAsForeignKey() {
+        Captor captor = captorDao.findById("c1");
+        Assertions
+                .assertThatThrownBy(() -> {
+                    captorDao.delete(captor);
+                    entityManager.flush();
+                })
+                .isExactlyInstanceOf(PersistenceException.class)
+                .hasCauseExactlyInstanceOf(ConstraintViolationException.class);
+    }*/
+
     @Test
     public void findById() {
         Captor captor = captorDao.findById("c1");
@@ -59,10 +68,14 @@ public class CaptorDaoImplTest {
                 .contains(Tuple.tuple("c1", "Eolienne"))
                 .contains(Tuple.tuple("c2", "Laminoire à chaud"));
     }
-   /* @Test
+    @Test
     public void create() {
         Assertions.assertThat(captorDao.findAll()).hasSize(2);
-        captorDao.create(new Captor("New captor", PowerSource.FIXED, site));
+        Site site = new Site("Bigcorp Lyon");
+        site.setId("site1");
+        Captor captor = new Captor("New captor", site);
+        captor.setPowerSource(PowerSource.SIMULATED);
+        captorDao.persist(captor);
         Assertions.assertThat(captorDao.findAll())
                 .hasSize(3)
                 .extracting(Captor::getName)
@@ -73,20 +86,19 @@ public class CaptorDaoImplTest {
         Captor captor = captorDao.findById("c1");
         Assertions.assertThat(captor.getName()).isEqualTo("Eolienne");
         captor.setName("Captor updated");
-        captorDao.update(captor);
+        captorDao.persist(captor);
         captor = captorDao.findById("c1");
         Assertions.assertThat(captor.getName()).isEqualTo("Captor updated");
     }
     @Test
-    public void deleteById() {
-        Captor newcaptor = new Captor("New captor", PowerSource.FIXED,  site);
-        captorDao.create(newcaptor);
+    public void delete() {
+        Site site = new Site("Bigcorp Lyon");
+        site.setId("site1");
+        Captor newcaptor = new Captor("New captor", site);
+        newcaptor.setPowerSource(PowerSource.SIMULATED);
+        captorDao.persist(newcaptor);
         Assertions.assertThat(captorDao.findById(newcaptor.getId())).isNotNull();
-        captorDao.deleteById(newcaptor.getId());
+        captorDao.delete(newcaptor);
         Assertions.assertThat(captorDao.findById(newcaptor.getId())).isNull();
     }
-    @Test
-    public void deleteByIdShouldThrowExceptionWhenIdIsUsedAsForeignKey() {
-        Assertions.assertThatThrownBy(() -> captorDao.deleteById("c1")).isExactlyInstanceOf(DataIntegrityViolationException.class);
-    }*/
 }

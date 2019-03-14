@@ -19,7 +19,7 @@ public class RealMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new Captor("test", PowerSource.REAL, new Site("bigcorp"));
+    private Captor captor = new Captor("test", new Site("bigcorp"));
     /**
      * Start instant used in tests
      */

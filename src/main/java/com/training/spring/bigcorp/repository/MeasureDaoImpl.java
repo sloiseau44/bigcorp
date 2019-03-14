@@ -20,7 +20,7 @@ public class MeasureDaoImpl implements MeasureDao{
     @Override
     public List<Measure> findBySiteId(String siteId) {
         try{
-            return em.createQuery(SELECT_WITH_JOIN+"where s.id = "+siteId, Measure.class).getResultList();
+            return em.createQuery(SELECT_WITH_JOIN+" where s.id = :siteId", Measure.class).setParameter("siteId", siteId).getResultList();
         }catch(EmptyResultDataAccessException e){
             return null;
         }
@@ -29,20 +29,21 @@ public class MeasureDaoImpl implements MeasureDao{
     @Override
     public List<Measure> findByCaptorId(String captorId) {
         try{
-            return em.createQuery(SELECT_WITH_JOIN+"where c.id = "+captorId, Measure.class).getResultList();
+            return em.createQuery(SELECT_WITH_JOIN+" where c.id = :captorId", Measure.class).setParameter("captorId", captorId).getResultList();
         }catch(EmptyResultDataAccessException e){
             return null;
         }
     }
 
     @Override
-    public Measure findById(String s) {
+    public Measure findById(Long s) {
         try{
             return em.find(Measure.class, s);
         }catch(EmptyResultDataAccessException e){
             return null;
         }
     }
+
 
     @Override
     public List<Measure> findAll() {

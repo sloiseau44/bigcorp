@@ -26,13 +26,13 @@ public class MeasureDaoImplTest {
 
     @Test
     public void findById() {
-        Measure measure = measureDao.findById("-1");
+        Measure measure = measureDao.findById(-1L);
         Assertions.assertThat(measure.getInstant()).isEqualTo(Instant.parse("2018-08-09T11:00:00.000Z"));
     }
 
     @Test
     public void findByIdShouldReturnNullWhenIdUnknown() {
-        Measure measure = measureDao.findById("unknown");
+        Measure measure = measureDao.findById(0L);
         Assertions.assertThat(measure).isNull();
     }
 
@@ -44,7 +44,7 @@ public class MeasureDaoImplTest {
 
     @Test
     public void findBySiteId() {
-        List<Measure> measures = measureDao.findBySiteId("site1");
+         List<Measure> measures = measureDao.findBySiteId("site1");
         Assertions.assertThat(measures).hasSize(10);
     }
 
@@ -56,29 +56,27 @@ public class MeasureDaoImplTest {
 
     @Test
     public void create() {
-        Captor captor = new Captor("Eolienne", PowerSource.FIXED, new Site("site"));
+        Captor captor = new Captor("Eolienne", new Site("Bigcorp Lyon"));
         captor.setId("c1");
         Assertions.assertThat(measureDao.findAll()).hasSize(10);
-        Measure measure = new Measure(Instant.now(), 2_333_666, captor);
-        measure.setId("-11");
-        measureDao.persist(measure);
+        measureDao.persist(new Measure(Instant.now(), 2_333_666, captor));
         Assertions.assertThat(measureDao.findAll()).hasSize(11);
     }
 
     @Test
     public void update() {
-        Measure measure = measureDao.findById("-1");
+        Measure measure = measureDao.findById(-1L);
         Assertions.assertThat(measure.getValueInWatt()).isEqualTo(1_000_000);
         measure.setValueInWatt(2_333_666);
         measureDao.persist(measure);
-        measure = measureDao.findById("-1");
+        measure = measureDao.findById(-1L);
         Assertions.assertThat(measure.getValueInWatt()).isEqualTo(2_333_666);
     }
 
     @Test
     public void deleteById() {
         Assertions.assertThat(measureDao.findAll()).hasSize(10);
-        measureDao.delete(measureDao.findById("-1"));
+        measureDao.delete(measureDao.findById(-1L));
         Assertions.assertThat(measureDao.findAll()).hasSize(9);
     }
 

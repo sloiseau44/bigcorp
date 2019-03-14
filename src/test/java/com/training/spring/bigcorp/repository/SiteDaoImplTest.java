@@ -3,16 +3,16 @@ package com.training.spring.bigcorp.repository;
 import com.training.spring.bigcorp.model.Site;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -21,6 +21,21 @@ import java.util.List;
 public class SiteDaoImplTest {
     @Autowired
     private SiteDao siteDao;
+
+    /* @Autowired
+    private EntityManager entityManager;
+
+    @Test
+    public void deleteByIdShouldThrowExceptionWhenIdIsUsedAsForeignKey() {
+        Site site = siteDao.findById("site1");
+        Assertions
+                .assertThatThrownBy(() -> {
+                    siteDao.delete(site);
+                    entityManager.flush();
+                })
+                .isExactlyInstanceOf(PersistenceException.class)
+                .hasCauseExactlyInstanceOf(ConstraintViolationException.class);
+    }*/
 
     @Test
     public void findById() {
@@ -40,10 +55,10 @@ public class SiteDaoImplTest {
                 .extracting("id", "name")
                 .contains(Tuple.tuple("site1", "Bigcorp Lyon"));
     }
-    /*@Test
+    @Test
     public void create() {
         Assertions.assertThat(siteDao.findAll()).hasSize(1);
-        siteDao.create(new Site("New Site"));
+        siteDao.persist(new Site("New Site"));
         Assertions.assertThat(siteDao.findAll())
                 .hasSize(2)
                 .extracting(Site::getName)
@@ -54,22 +69,18 @@ public class SiteDaoImplTest {
         Site site = siteDao.findById("site1");
         Assertions.assertThat(site.getName()).isEqualTo("Bigcorp Lyon");
         site.setName("Site updated");
-        siteDao.update(site);
+        siteDao.persist(site);
         site = siteDao.findById("site1");
         Assertions.assertThat(site.getName()).isEqualTo("Site updated");
     }
     @Test
-    public void deleteById() {
+    public void delete() {
         Site newSite = new Site("New Site");
-        siteDao.create(newSite);
+        siteDao.persist(newSite);
         Assertions.assertThat(siteDao.findById(newSite.getId())).isNotNull();
-        siteDao.deleteById(newSite.getId());
+        siteDao.delete(newSite);
         Assertions.assertThat(siteDao.findById(newSite.getId())).isNull();
     }
 
-    @Test
-    public void deleteByIdShouldThrowExceptionWhenIdIsUsedAsForeignKey() {
-        Assertions.assertThatThrownBy(() -> siteDao.deleteById("site1")).isExactlyInstanceOf(DataIntegrityViolationException.class);
-    }*/
 }
 
