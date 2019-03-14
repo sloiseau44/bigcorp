@@ -99,8 +99,4 @@ public class MeasureDaoImplTest {
                 .isExactlyInstanceOf(ObjectOptimisticLockingFailureException.class);
     }
 
-
-
-
-
 }

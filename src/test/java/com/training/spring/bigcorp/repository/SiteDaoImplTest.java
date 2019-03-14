@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @ComponentScan
+@Transactional
 public class SiteDaoImplTest {
     @Autowired
     private SiteDao siteDao;
@@ -103,6 +105,27 @@ public class SiteDaoImplTest {
         Assertions.assertThat(attachedSite.getVersion()).isEqualTo(1);
         Assertions.assertThatThrownBy(() -> siteDao.save(site))
                 .isExactlyInstanceOf(ObjectOptimisticLockingFailureException.class);
+    }
+
+    @Test
+    public void createShouldThrowExceptionWhenNameIsNull() {
+        Assertions
+                .assertThatThrownBy(() -> {
+                    siteDao.save(new Site(null));
+                    entityManager.flush();
+                })
+                .isExactlyInstanceOf(javax.validation.ConstraintViolationException.class)
+                .hasMessageContaining("ne peut pas être nul");
+    }
+    @Test
+    public void createShouldThrowExceptionWhenNameSizeIsInvalid() {
+        Assertions
+                .assertThatThrownBy(() -> {
+                    siteDao.save(new Site("ee"));
+                    entityManager.flush();
+                })
+                .isExactlyInstanceOf(javax.validation.ConstraintViolationException.class)
+                .hasMessageContaining("la taille doit être comprise entre 3 et 100");
     }
 
 }

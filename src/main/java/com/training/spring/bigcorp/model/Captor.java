@@ -1,22 +1,19 @@
 package com.training.spring.bigcorp.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Captor {
-    /**
-     * Captor id
-     */
     @Id
     private String id = UUID.randomUUID().toString();
 
-    /**
-     * Captor name
-     */
-    @Column(nullable=false)
+    @NotNull
+    @Size(min=3,max=100)
     private String name;
 
     @ManyToOne(optional=false)
