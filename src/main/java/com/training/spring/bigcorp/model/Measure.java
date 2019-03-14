@@ -15,6 +15,8 @@ public class Measure {
     private Integer valueInWatt;
     @ManyToOne(optional=false)
     private Captor captor;
+    @Version
+    private int version;
 
     public Measure(){}
 
@@ -22,6 +24,14 @@ public class Measure {
         this.instant = instant;
         this.valueInWatt = valueInWatt;
         this.captor = captor;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public Instant getInstant() {

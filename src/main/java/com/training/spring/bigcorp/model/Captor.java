@@ -5,7 +5,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-public class Captor {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class Captor {
     /**
      * Captor id
      */
@@ -18,19 +19,17 @@ public class Captor {
     @Column(nullable=false)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    private PowerSource powerSource;
-
     @ManyToOne(optional=false)
     private Site site;
 
-    private Integer defaultPowerInWatt;
 
     @Deprecated
     public Captor() {
         // Use for serializer or deserializer
     }
+
+    @Version
+    private int version;
 
     /**
      * Constructor to use with required property
@@ -41,20 +40,20 @@ public class Captor {
         this.site = site;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public Site getSite() {
         return site;
     }
 
     public void setSite(Site site) {
         this.site = site;
-    }
-
-    public PowerSource getPowerSource() {
-        return powerSource;
-    }
-
-    public void setPowerSource(PowerSource powerSource) {
-        this.powerSource = powerSource;
     }
 
     public String getId() {
@@ -71,14 +70,6 @@ public class Captor {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getDefaultPowerInWatt() {
-        return defaultPowerInWatt;
-    }
-
-    public void setDefaultPowerInWatt(Integer defaultPowerInWatt) {
-        this.defaultPowerInWatt = defaultPowerInWatt;
     }
 
     @Override

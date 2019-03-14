@@ -7,21 +7,15 @@ import java.util.UUID;
 
 @Entity
 public class Site {
-    /**
-     * Site id
-     */
+
     @Id
     private String id = UUID.randomUUID().toString();
 
-    /**
-     * Site name
-     */
+
     @Column(nullable=false)
     private String name;
 
-    /**
-     * Site captors
-     */
+
     @OneToMany(mappedBy = "site")
     private Set<Captor> captors;
 
@@ -30,10 +24,17 @@ public class Site {
         // Use for serializer or deserializer
     }
 
-    /**
-     * Constructor to use with required property
-     * @param name
-     */
+    @Version
+    private int version;
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public Site(String name) {
         this.name = name;
     }

@@ -20,7 +20,7 @@ public class FixedMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new Captor("test", new Site("bigcorp"));
+    private Captor captor = new RealCaptor("test", new Site("bigcorp"));
     /**
      * Start instant used in tests
      */

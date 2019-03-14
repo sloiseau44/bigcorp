@@ -1,5 +1,6 @@
 package com.training.spring.bigcorp.repository;
 
+import com.training.spring.bigcorp.model.Captor;
 import com.training.spring.bigcorp.model.Site;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityManager;
@@ -87,6 +89,20 @@ public class SiteDaoImplTest {
         Assertions.assertThat(siteDao.findById(newsite.getId())).isNotEmpty();
         siteDao.delete(newsite);
         Assertions.assertThat(siteDao.findById(newsite.getId())).isEmpty();
+    }
+
+    @Test
+    public void preventConcurrentWrite() {
+        Site site = siteDao.getOne("site1");
+        Assertions.assertThat(site.getVersion()).isEqualTo(0);
+        entityManager.detach(site);
+        site.setName("Site updated");
+        Site attachedSite = siteDao.save(site);
+        entityManager.flush();
+        Assertions.assertThat(attachedSite.getName()).isEqualTo("Site updated");
+        Assertions.assertThat(attachedSite.getVersion()).isEqualTo(1);
+        Assertions.assertThatThrownBy(() -> siteDao.save(site))
+                .isExactlyInstanceOf(ObjectOptimisticLockingFailureException.class);
     }
 
 }
