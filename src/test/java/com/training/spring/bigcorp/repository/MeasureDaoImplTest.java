@@ -6,6 +6,7 @@ import com.training.spring.bigcorp.model.Measure;
 import com.training.spring.bigcorp.model.PowerSource;
 import com.training.spring.bigcorp.model.Site;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -26,25 +28,22 @@ public class MeasureDaoImplTest {
 
     @Test
     public void findById() {
-        Measure measure = measureDao.findById(-1L);
-        Assertions.assertThat(measure.getInstant()).isEqualTo(Instant.parse("2018-08-09T11:00:00.000Z"));
+        Optional<Measure> measure = measureDao.findById(-1L);
+        Assertions.assertThat(measure)
+                .get()
+                .extracting("instant")
+                .containsExactly(Instant.parse("2018-08-09T11:00:00.000Z"));
     }
 
     @Test
     public void findByIdShouldReturnNullWhenIdUnknown() {
-        Measure measure = measureDao.findById(0L);
-        Assertions.assertThat(measure).isNull();
+        Optional<Measure> measure = measureDao.findById(0L);
+        Assertions.assertThat(measure).isEmpty();
     }
 
     @Test
     public void findAll() {
         List<Measure> measures = measureDao.findAll();
-        Assertions.assertThat(measures).hasSize(10);
-    }
-
-    @Test
-    public void findBySiteId() {
-         List<Measure> measures = measureDao.findBySiteId("site1");
         Assertions.assertThat(measures).hasSize(10);
     }
 
@@ -56,30 +55,34 @@ public class MeasureDaoImplTest {
 
     @Test
     public void create() {
-        Captor captor = new Captor("Eolienne", new Site("Bigcorp Lyon"));
-        captor.setId("c1");
         Assertions.assertThat(measureDao.findAll()).hasSize(10);
-        measureDao.persist(new Measure(Instant.now(), 2_333_666, captor));
+        Site site = new Site("Bigcorp Lyon");
+        site.setId("site1");
+        Captor captor = new Captor("Eolienne", site);
+        captor.setId("c1");
+        captor.setPowerSource(PowerSource.SIMULATED);
+        measureDao.save(new Measure(Instant.now(), 2_333_666, captor));
         Assertions.assertThat(measureDao.findAll()).hasSize(11);
     }
 
     @Test
     public void update() {
-        Measure measure = measureDao.findById(-1L);
-        Assertions.assertThat(measure.getValueInWatt()).isEqualTo(1_000_000);
-        measure.setValueInWatt(2_333_666);
-        measureDao.persist(measure);
+        Optional<Measure> measure = measureDao.findById(-1L);
+        Assertions.assertThat(measure).get().extracting("valueInWatt").containsExactly(1_000_000);
+        measure.ifPresent(m ->  {
+            m.setValueInWatt(2_333_666);
+            measureDao.save(m);
+        });
         measure = measureDao.findById(-1L);
-        Assertions.assertThat(measure.getValueInWatt()).isEqualTo(2_333_666);
+        Assertions.assertThat(measure).get().extracting("valueInWatt").containsExactly(2_333_666);
     }
 
     @Test
     public void deleteById() {
         Assertions.assertThat(measureDao.findAll()).hasSize(10);
-        measureDao.delete(measureDao.findById(-1L));
+        measureDao.delete(measureDao.findById(-1L).get());
         Assertions.assertThat(measureDao.findAll()).hasSize(9);
     }
-
 
 
 
