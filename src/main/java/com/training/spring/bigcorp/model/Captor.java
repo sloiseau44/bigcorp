@@ -10,7 +10,11 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Captor {
     @Id
-    private String id = UUID.randomUUID().toString();
+    private String id;
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     @NotNull
     @Size(min=3,max=100)
@@ -19,8 +23,10 @@ public abstract class Captor {
     @ManyToOne(optional=false)
     private Site site;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private PowerSource powerSource;
 
-    @Deprecated
     public Captor() {
         // Use for serializer or deserializer
     }
@@ -28,13 +34,10 @@ public abstract class Captor {
     @Version
     private int version;
 
-    /**
-     * Constructor to use with required property
-     * @param name
-     */
-    public Captor(String name,  Site site) {
+    public Captor(@NotNull @Size(min = 3, max = 100) String name, Site site, @NotNull PowerSource powerSource) {
         this.name = name;
         this.site = site;
+        this.powerSource = powerSource;
     }
 
     public int getVersion() {
@@ -67,6 +70,14 @@ public abstract class Captor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public PowerSource getPowerSource() {
+        return powerSource;
+    }
+
+    public void setPowerSource(PowerSource powerSource) {
+        this.powerSource = powerSource;
     }
 
     @Override

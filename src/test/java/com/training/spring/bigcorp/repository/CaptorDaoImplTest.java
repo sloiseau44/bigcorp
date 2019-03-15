@@ -1,6 +1,7 @@
 package com.training.spring.bigcorp.repository;
 
 import com.training.spring.bigcorp.model.*;
+import net.bytebuddy.asm.Advice;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.hibernate.exception.ConstraintViolationException;
@@ -28,6 +29,9 @@ public class CaptorDaoImplTest {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private MeasureDao measureDao;
 
     @Test
     public void deleteByIdShouldThrowExceptionWhenIdIsUsedAsForeignKey() {
@@ -122,7 +126,7 @@ public class CaptorDaoImplTest {
 
         Site site = new Site("Bigcorp Lyon");
         site.setId("site1");
-        Captor captor = new FixedCaptor("lienn", site);
+        Captor captor = new FixedCaptor("lienn", site, null);
         List<Captor> captors = captorDao.findAll(Example.of(captor, matcher));
         Assertions.assertThat(captors)
                 .hasSize(1)
@@ -173,9 +177,7 @@ public class CaptorDaoImplTest {
     public void createSimulatedCaptorShouldThrowExceptionWhenMinMaxAreInvalid() {
         Site site = new Site("Bigcorp Lyon");
         site.setId("site1");
-        SimulatedCaptor simulatedCaptor = new SimulatedCaptor("Mon site", site);
-        simulatedCaptor.setMaxPowerInWatt(5);
-        simulatedCaptor.setMinPowerInWatt(10);
+        SimulatedCaptor simulatedCaptor = new SimulatedCaptor("Mon site", site, 10, 5);
         Assertions
                 .assertThatThrownBy(() -> {
                     captorDao.save(simulatedCaptor);
@@ -183,5 +185,13 @@ public class CaptorDaoImplTest {
                 })
                 .isExactlyInstanceOf(javax.validation.ConstraintViolationException.class)
                 .hasMessageContaining("minPowerInWatt should be less than maxPowerInWatt");
+    }
+
+    @Test
+    public void deleteBySiteId() {
+        Assertions.assertThat(captorDao.findBySiteId("site1")).hasSize(2);
+        measureDao.deleteAll();
+        captorDao.deleteBySiteId("site1");
+        Assertions.assertThat(captorDao.findBySiteId("site1")).isEmpty();
     }
 }

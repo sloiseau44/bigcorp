@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MeasureDao extends JpaRepository<Measure, Long> {
     List<Measure> findByCaptorId(String captorId);
+    void deleteByCaptorId(String captorId);
 }

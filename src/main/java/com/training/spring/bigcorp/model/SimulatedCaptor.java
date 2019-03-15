@@ -18,13 +18,15 @@ public class SimulatedCaptor extends Captor  {
         return this.minPowerInWatt <= this.maxPowerInWatt;
     }
 
-    @Deprecated
+
     public SimulatedCaptor() {
         super();
         // used only by serializer and deserializer
     }
-    public SimulatedCaptor(String name, Site site) {
-        super(name, site);
+    public SimulatedCaptor(String name, Site site, Integer minPowerInWatt, Integer maxPowerInWatt) {
+        super(name, site, PowerSource.SIMULATED);
+        this.maxPowerInWatt = maxPowerInWatt;
+        this.minPowerInWatt = minPowerInWatt;
     }
 
     public Integer getMinPowerInWatt() {

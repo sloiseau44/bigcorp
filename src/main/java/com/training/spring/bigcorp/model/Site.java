@@ -11,7 +11,11 @@ import java.util.UUID;
 public class Site {
 
     @Id
-    private String id = UUID.randomUUID().toString();
+    private String id;
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID().toString();
+    }
 
 
     @NotNull
@@ -22,7 +26,6 @@ public class Site {
     @OneToMany(mappedBy = "site")
     private Set<Captor> captors;
 
-    @Deprecated
     public Site() {
         // Use for serializer or deserializer
     }
