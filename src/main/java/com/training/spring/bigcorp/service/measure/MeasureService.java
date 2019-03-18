@@ -5,8 +5,11 @@ import com.training.spring.bigcorp.model.*;
 import java.time.Instant;
 import java.util.List;
 
-public interface MeasureService {
-    default void checkReadMeasuresAgrs(Captor captor, Instant start, Instant end, MeasureStep step){
+public interface MeasureService<T extends Captor> {
+    List<Measure> readMeasures(T captor, Instant start, Instant end, MeasureStep
+            step);
+    default void checkReadMeasuresAgrs(T captor, Instant start, Instant end,
+                                       MeasureStep step){
         if (captor == null) {
             throw new IllegalArgumentException("captor is required");
         }
@@ -23,6 +26,4 @@ public interface MeasureService {
             throw new IllegalArgumentException("start must be before end");
         }
     }
-
-    List<Measure> readMeasures(Captor captor, Instant start, Instant end, MeasureStep step);
 }

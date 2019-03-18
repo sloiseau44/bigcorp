@@ -19,7 +19,7 @@ public class SimulatedMeasureServiceTest {
     /**
      * Captor used in tests
      */
-    private Captor captor = new RealCaptor("test", new Site("bigcorp"));
+    private SimulatedCaptor captor = new SimulatedCaptor("test", new Site("bigcorp"), 500000, 1000000);
     /**
      * Start instant used in tests
      */
@@ -37,7 +37,7 @@ public class SimulatedMeasureServiceTest {
         assertThatThrownBy(() -> service.readMeasures(null, start, end, MeasureStep.ONE_DAY))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("captor is required");
-        assertThatThrownBy(() -> service.readMeasures(captor, null, end, MeasureStep.ONE_DAY))
+        assertThatThrownBy(() -> service    .readMeasures(captor, null, end, MeasureStep.ONE_DAY))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("start is required");
         assertThatThrownBy(() -> service.readMeasures(captor, start, null, MeasureStep.ONE_DAY))

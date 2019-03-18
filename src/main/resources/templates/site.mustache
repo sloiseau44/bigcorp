@@ -23,11 +23,8 @@
                     <h2>Liste des capteurs</h2>
                     <div class="form-group">
                         <div>
-                            <a class="btn btn-primary" href="/sites/{{site.id}}/captors/FIXED/create">
+                            <a class="btn btn-primary" href="/sites/{{site.id}}/captors/create">
                                 Nouveau capteur
-                            </a>
-                            <a class="btn btn-primary" href="/sites/{{site.id}}/captors/SIMULATED/create">
-                                Nouveau capteur simulé
                             </a>
                         </div>
                         <hr>
@@ -44,7 +41,7 @@
                                         <td>{{name}}</td>
                                         <td>{{powerSource}}</td>
                                         <td>
-                                            <a class="btn btn-primary" href="/sites/{{site.id}}/captors/{{powerSource}}/{{id}}" role="button">
+                                            <a class="btn btn-primary" href="/sites/{{site.id}}/captors/{{id}}" role="button">
                                                 Editer
                                             </a>
                                         </td>

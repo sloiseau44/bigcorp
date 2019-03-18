@@ -2,6 +2,9 @@ package com.training.spring.bigcorp.service;
 
 import com.training.spring.bigcorp.config.Monitored;
 import com.training.spring.bigcorp.model.Captor;
+import com.training.spring.bigcorp.model.FixedCaptor;
+import com.training.spring.bigcorp.model.RealCaptor;
+import com.training.spring.bigcorp.model.SimulatedCaptor;
 import com.training.spring.bigcorp.repository.CaptorDao;
 import com.training.spring.bigcorp.service.measure.MeasureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public class CaptorServiceImpl implements CaptorService{
 
-    private MeasureService fixedMeasureService;
-    private MeasureService realMeasureService;
-    private MeasureService simulatedMeasureService;
+    private MeasureService<FixedCaptor> fixedMeasureService;
+    private MeasureService<RealCaptor> realMeasureService;
+    private MeasureService<SimulatedCaptor> simulatedMeasureService;
 
     @Autowired
     private CaptorDao captorDao;
