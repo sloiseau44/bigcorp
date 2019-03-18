@@ -57,4 +57,12 @@ public class BigCorpApplicationProperties {
     public void setWebSiteUrl(String webSiteUrl) {
         this.webSiteUrl = webSiteUrl;
     }
+
+    public BigCorpApplicationMeasureProperties getMeasure() {
+        return measure;
+    }
+
+    public void setMeasure(BigCorpApplicationMeasureProperties measure) {
+        this.measure = measure;
+    }
 }

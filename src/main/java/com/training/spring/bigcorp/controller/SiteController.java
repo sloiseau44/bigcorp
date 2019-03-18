@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.stream.Collectors;
+
 @Controller
 @Transactional
 @RequestMapping(path="/sites")
@@ -42,7 +44,7 @@ public class SiteController {
     }
     @GetMapping("/create")
     public ModelAndView create(Model model){
-        return new ModelAndView("site").addObject("site", new Site());
+        return new ModelAndView("sites").addObject("site", new Site());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -63,6 +65,19 @@ public class SiteController {
         captorDao.deleteBySiteId(id);
         siteDao.delete(site);
         return new ModelAndView("sites").addObject("sites", siteDao.findAll());
+    }
+
+    @GetMapping("/{id}/measures")
+    public ModelAndView findMeasuresById(@PathVariable String id) {
+        Site site = siteDao.findById(id).orElseThrow(IllegalArgumentException::new);
+        String captors = site.getCaptors()
+                .stream()
+                .map(c -> "{ id: '" + c.getId() + "', name: '" + c.getName()
+                        + "'}")
+                .collect(Collectors.joining(","));
+        return new ModelAndView("site-measures")
+                .addObject("site", site)
+                .addObject("captors", captors);
     }
 
 }

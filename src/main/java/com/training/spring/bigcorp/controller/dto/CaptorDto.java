@@ -12,15 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 public class CaptorDto {
-    @Autowired
-    private SiteDao siteDao;
-
-    @Autowired
-    private CaptorDao captorDao;
-
-    @Autowired
-    private MeasureDao measureDao;
-
     private PowerSource powerSource;
     private String id;
     private String name;
@@ -55,6 +46,8 @@ public class CaptorDto {
         this.siteId = site.getId();
         this.siteName = site.getName();
     }
+
+
     public Captor toCaptor(Site site) {
         Captor captor;
         switch (powerSource) {
@@ -73,23 +66,6 @@ public class CaptorDto {
         }
         captor.setId(id);
         return captor;
-    }
-
-    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView save(@PathVariable String siteId, CaptorDto captorDto) {
-        Site site = siteDao.findById(siteId).orElseThrow(IllegalArgumentException::new);
-        Captor captor = captorDto.toCaptor(site);
-        captorDao.save(captor);
-        return new ModelAndView("site").addObject("site", site);
-    }
-
-    @PostMapping("/{id}/delete")
-    public ModelAndView delete(@PathVariable String siteId, @PathVariable String id) {
-        measureDao.deleteByCaptorId(id);
-        captorDao.deleteById(id);
-        return new ModelAndView("site")
-                .addObject("site",
-                        siteDao.findById(siteId).orElseThrow(IllegalArgumentException::new));
     }
 
     public PowerSource getPowerSource() {

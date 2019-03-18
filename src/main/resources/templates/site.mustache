@@ -12,7 +12,7 @@
             <form action="/sites" method="post">
                 <div class="form-group">
                     <label for="name">Nom</label>
-                    <input type="text" class="form-control" id="name" name="name" required value="{{#captor.name}}{{captor.name}}{{/captor.name}}" aria-describedby="nameHelp" placeholder="Nom du site">
+                    <input type="text" class="form-control" id="name" name="name" required value="{{#site.name}}{{site.name}}{{/site.name}}" aria-describedby="nameHelp" placeholder="Nom du site">
                     <small id="nameHelp" class="form-text text-muted">
                         Le nom d'un site doit être unique
                     </small>
@@ -55,6 +55,7 @@
                     <a class="btn btn-secondary" href="/sites">Annuler</a>
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
                     {{#site.id}}<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Supprimer</button>{{/site.id}}
+                </div>
             </form>
         </div>
         {{#site.id}}
@@ -74,7 +75,7 @@
                     </div>
                     <div class="modal-footer">
                         <form action="/sites/{{site.id}}/delete" method="post">
-                            <button type="button" class="btn btn-secondary" data- dismiss="modal">Close</button>
+                            <a class="btn btn-secondary" href="/sites/{{site.id}}">Close</a>
                             <button type="submit" class="btn btn-danger">Supprimer</button>
                         </form>
                     </div>
